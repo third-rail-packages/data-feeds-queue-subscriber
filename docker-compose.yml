@@ -6,7 +6,7 @@ services:
       context: ./docker/app
     environment:
       - PHP_IDE_CONFIG=serverName=trainjunkies_packages_queue_subscriber
-    working_dir: /var/www
+    working_dir: /app
     env_file: .env
     volumes:
-        - .:/var/www
+        - .:/app

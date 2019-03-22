@@ -30,6 +30,6 @@ RUN set -ex \
     && curl -sS  https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin \
     && rm -rf /tmp/*
 
-WORKDIR /var/www
+WORKDIR /app
 
-CMD ["php-fpm"]
+CMD ["sh"]
