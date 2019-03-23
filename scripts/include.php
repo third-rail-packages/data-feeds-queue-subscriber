@@ -24,9 +24,9 @@ function nationalrail_password()
     return getenv('NATIONALRAIL_PASSWORD');
 }
 
-function nationalrail_queue()
+function nationalrail_topic()
 {
-    return getenv('NATIONALRAIL_QUEUE');
+    return getenv('NATIONALRAIL_TOPIC');
 }
 
 function networkrail_host()

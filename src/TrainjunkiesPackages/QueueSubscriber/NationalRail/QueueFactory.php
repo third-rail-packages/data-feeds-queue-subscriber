@@ -4,17 +4,18 @@ namespace TrainjunkiesPackages\QueueSubscriber\NationalRail;
 
 use TrainjunkiesPackages\QueueSubscriber\Queue\ContextFactory;
 use TrainjunkiesPackages\QueueSubscriber\Queue\Subscriber;
+use TrainjunkiesPackages\QueueSubscriber\Queue\TopicSubscriber;
 
 class QueueFactory
 {
-    public static function create($username, $password)
+    public static function create($username, $password, $host, $port = 61613)
     {
-        return new Subscriber(
+        return new TopicSubscriber(
             ContextFactory::create(
                 $username,
                 $password,
-                'datafeeds.nationalrail.co.uk',
-                61613
+                $host,
+                $port
             )
         );
     }

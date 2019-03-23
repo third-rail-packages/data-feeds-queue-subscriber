@@ -10,8 +10,10 @@ date_default_timezone_set('UTC');
 try {
     QueueFactory::create(
         nationalrail_username(),
-        nationalrail_password()
-    )->consume(nationalrail_queue(), function ($message) {
+        nationalrail_password(),
+        nationalrail_host(),
+        nationalrail_port()
+    )->consume(nationalrail_topic(), function ($message) {
         var_dump($message);
     });
 }
