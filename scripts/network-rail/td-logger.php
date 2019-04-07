@@ -12,7 +12,9 @@ try {
     QueueFactory::create(
         networkrail_username(),
         networkrail_password()
-    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function ($message) use ($tdArea) {
+    )
+    ->consumer(TrainDescriberTopic::TD_ALL_AREAS)
+    ->ack(function ($message) use ($tdArea) {
         $collection = json_decode($message, true);
 
         $filtered = array_filter($collection, function($item) use ($tdArea) {

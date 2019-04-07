@@ -13,8 +13,11 @@ try {
         nationalrail_password(),
         nationalrail_host(),
         nationalrail_port()
-    )->consume(nationalrail_topic(), function ($message) {
-        var_dump($message);
+    )
+    ->consumer(nationalrail_topic())
+    ->ack(function ($body, $headers) {
+        echo "Message Type: " . $headers['MessageType'] . PHP_EOL;
+        echo $body . PHP_EOL . PHP_EOL;
     });
 }
 catch (ErrorFrameException $e) {

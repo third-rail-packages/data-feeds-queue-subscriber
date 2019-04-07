@@ -10,8 +10,10 @@ try {
     QueueFactory::create(
         networkrail_username(),
         networkrail_password()
-    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function ($message) {
-       var_dump($message);
+    )
+    ->consumer(TrainDescriberTopic::TD_ALL_AREAS)
+    ->ack(function ($message) {
+       echo $message . PHP_EOL . PHP_EOL;
     });
 }
 catch (ErrorFrameException $e) {

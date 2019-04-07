@@ -10,8 +10,10 @@ try {
     QueueFactory::create(
         networkrail_username(),
         networkrail_password()
-    )->consume(Vstp::VSTP_ALL, function($message) {
-        echo $message . PHP_EOL . PHP_EOL;
+    )
+    ->consumer(Vstp::VSTP_ALL)
+    ->ack(function($body, $headers) {
+        echo $body . PHP_EOL . PHP_EOL;
     });
 } catch (ErrorFrameException $e) {
     var_dump($e->getFrame());

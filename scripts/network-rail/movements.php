@@ -10,8 +10,10 @@ try {
     QueueFactory::create(
         networkrail_username(),
         networkrail_password()
-    )->consume(MovementTopic::MOVEMENT_ALL, function ($message) {
-        var_dump($message);
+    )
+    ->consumer(MovementTopic::MOVEMENT_ALL)
+    ->ack(function ($body, $headers) {
+        var_dump($body);
     });
 }
 catch (ErrorFrameException $e) {
