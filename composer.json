@@ -2,12 +2,15 @@
     "name": "trainjunkies-packages/data-feeds-queue-subscriber",
     "description": "Subscribe to Network Rail & National Rail data feed queues",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
     "require": {
-        "enqueue/stomp": "^0.8.27"
+        "php": "^7.2",
+        "stomp-php/stomp-php": "^4.5"
     },
     "require-dev": {
-        "phpspec/phpspec": "^3.4",
+        "phpspec/phpspec": "^6.1",
+        "phpstan/phpstan": "^0.12.6",
+        "phpunit/phpunit": "^8.5",
         "squizlabs/php_codesniffer": "^3.4"
     },
     "autoload": {
@@ -16,15 +19,20 @@
         }
     },
     "config": {
-         "bin-dir": "bin"
+        "sort-packages": true,
+        "bin-dir": "bin"
     },
     "scripts": {
-        "sniff": "bin/phpcs -s --standard=PSR2 src/",
-        "beauty": "bin/phpcbf --standard=PSR2 src/",
-        "spec": "bin/phpspec run --format=pretty --no-code-generation --stop-on-failure",
+        "sniff": "bin/phpcs --colors --cache --standard=PSR2 -p -s -v src/ --colors",
+        "beauty": "bin/phpcbf --standard=PSR2 src/ --colors",
+        "static": "bin/phpstan analyse src/ --level=max --ansi --verbose",
+        "spec": "bin/phpspec run --format=pretty --no-code-generation --stop-on-failure --ansi",
+        "integration": "bin/phpunit --stop-on-defect --stop-on-incomplete --stop-on-error --colors=always --verbose",
         "ci": [
             "@sniff",
-            "@spec"
+            "@static",
+            "@spec",
+            "@integration"
         ]
     }
 }

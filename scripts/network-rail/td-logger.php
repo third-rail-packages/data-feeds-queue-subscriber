@@ -1,7 +1,6 @@
 <?php
 
-use Stomp\Exception\ErrorFrameException;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\QueueFactory;
+use TrainjunkiesPackages\QueueSubscriber\NetworkRail\SubscriptionFactory;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\TrainDescriber as TrainDescriberTopic;
 
 include __DIR__ . '/../include.php';
@@ -9,13 +8,11 @@ include __DIR__ . '/../include.php';
 $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
 
 try {
-    QueueFactory::create(
+    SubscriptionFactory::create(
         networkrail_username(),
         networkrail_password()
-    )
-    ->consumer(TrainDescriberTopic::TD_ALL_AREAS)
-    ->ack(function ($message) use ($tdArea) {
-        $collection = json_decode($message, true);
+    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function($frame) use($tdArea) {
+        $collection = json_decode($frame->body, true);
 
         $filtered = array_filter($collection, function($item) use ($tdArea) {
             $data = array_shift($item);
@@ -32,7 +29,7 @@ try {
                     echo sprintf(
                             'Type: "%s", Time: "%s", Area: "%s", From: "%s", To: "%s", Description: "%s"',
                             $message['msg_type'],
-                            datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                            datetime_from_milliseconds($message['time'])->format('d/m/Y H:i:s'),
                             $message['area_id'],
                             $message['from'],
                             $message['to'],
@@ -43,7 +40,7 @@ try {
                     echo sprintf(
                             'Type: "%s", Time: "%s", Area: "%s", From: "%s", Description: "%s"',
                             $message['msg_type'],
-                            datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                            datetime_from_milliseconds($message['time'])->format('d/m/Y H:i:s'),
                             $message['area_id'],
                             $message['from'],
                             $message['descr']
@@ -54,7 +51,7 @@ try {
                     echo sprintf(
                             'Type: "%s", Time: "%s", Area: "%s", To: "%s", Description: "%s"',
                             $message['msg_type'],
-                            datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                            datetime_from_milliseconds($message['time'])->format('d/m/Y H:i:s'),
                             $message['area_id'],
                             $message['to'],
                             $message['descr']
@@ -65,7 +62,7 @@ try {
                     echo sprintf(
                             'Type: "%s", Time: "%s", Area: "%s", Report Time: "%s"',
                             $message['msg_type'],
-                            datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                            datetime_from_milliseconds($message['time'])->format('d/m/Y H:i:s'),
                             $message['area_id'],
                             DateTimeImmutable::createFromFormat('Gi', $message['report_time'], new DateTimeZone('UTC'))->format('H:i')
                         ) . PHP_EOL;
@@ -75,7 +72,7 @@ try {
                     echo sprintf(
                             'Type: "%s", Time: "%s", Area: "%s", Address: "%s", State (HEX): "%s", Sate (Binary): "%s"',
                             $message['msg_type'],
-                            datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                            datetime_from_milliseconds($message['time'])->format('d/m/Y H:i:s'),
                             $message['area_id'],
                             $message['address'],
                             $message['data'],
@@ -88,7 +85,7 @@ try {
             }
         }
     });
-}
-catch (ErrorFrameException $e) {
-    var_dump($e->getFrame());
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    exit(1);
 }

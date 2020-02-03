@@ -1,22 +1,21 @@
 <?php
 
-use Stomp\Exception\ErrorFrameException;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\QueueFactory;
+use Stomp\Transport\Frame;
+use TrainjunkiesPackages\QueueSubscriber\NetworkRail\SubscriptionFactory;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\TrainDescriber as TrainDescriberTopic;
 
 include __DIR__ . '/../include.php';
 
 $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
-$messageType = ($argv[2] !== null) ? $argv[2] : 'SF'; // Default to Signalling Update
+$messageType = ($argv[2] !== null) ? $argv[2]
+    : 'SF'; // Default to Signalling Update
 
 try {
-    QueueFactory::create(
+    SubscriptionFactory::create(
         networkrail_username(),
         networkrail_password()
-    )
-    ->consumer(TrainDescriberTopic::TD_ALL_AREAS)
-    ->ack(function ($message) use ($tdArea, $messageType) {
-        $collection = json_decode($message, true);
+    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function (Frame $frame) use ($tdArea, $messageType) {
+        $collection = json_decode($frame->getBody(), true);
 
         $filtered = array_filter($collection, function ($item) use ($tdArea, $messageType) {
             $data = array_shift($item);
@@ -29,16 +28,17 @@ try {
                 $message = array_shift($sf_message);
 
                 echo sprintf(
-                        'Time: "%s", Area: "%s", Address: "%s", State (HEX): "%s", Sate (Binary): "%s"',
-                        datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
-                        $message['area_id'],
-                        $message['address'],
-                        $message['data'],
-                        hexagonal_to_binary($message['data'])
-                    ) . PHP_EOL;
+                    'Time: "%s", Area: "%s", Address: "%s", State (HEX): "%s", Sate (Binary): "%s"',
+                    datetime_from_milliseconds($message['time'])->format('d/m/y H:i:s'),
+                    $message['area_id'],
+                    $message['address'],
+                    $message['data'],
+                    hexagonal_to_binary($message['data'])
+                ) . PHP_EOL;
             }
         }
     });
-} catch (ErrorFrameException $e) {
-    var_dump($e->getFrame());
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    exit(1);
 }

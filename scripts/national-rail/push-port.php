@@ -1,25 +1,28 @@
 <?php
 
-use Stomp\Exception\ErrorFrameException;
-use TrainjunkiesPackages\QueueSubscriber\NationalRail\QueueFactory;
+use TrainjunkiesPackages\QueueSubscriber\Client;
+use TrainjunkiesPackages\QueueSubscriber\NationalRail\Topics\Darwin as DarwinTopic;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
 
 include __DIR__ . '/../include.php';
 
-date_default_timezone_set('UTC');
-
 try {
-    QueueFactory::create(
-        nationalrail_username(),
-        nationalrail_password(),
-        nationalrail_host(),
-        nationalrail_port()
-    )
-    ->consumer(nationalrail_topic())
-    ->ack(function ($body, $headers) {
-        echo "Message Type: " . $headers['MessageType'] . PHP_EOL;
-        echo $body . PHP_EOL . PHP_EOL;
+    $options = (new OptionsBuilder())
+        ->withUsername(nationalrail_username())
+        ->withPassword(nationalrail_password())
+        ->withHost(nationalrail_host())
+        ->withPort(nationalrail_port())
+        ->build();
+
+    $subscription = new Subscription(new Client($options));
+
+    $subscription->consume(DarwinTopic::DARWIN, function ($frame) {
+        echo PHP_EOL;
+        echo gzdecode($frame->body) . PHP_EOL;
+        echo PHP_EOL;
     });
-}
-catch (ErrorFrameException $e) {
-    var_dump($e->getFrame());
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    exit(1);
 }
