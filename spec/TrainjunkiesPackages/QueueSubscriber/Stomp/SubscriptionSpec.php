@@ -5,6 +5,7 @@ namespace spec\TrainjunkiesPackages\QueueSubscriber\Stomp;
 use Stomp\StatefulStomp;
 use Stomp\Transport\Frame;
 use TrainjunkiesPackages\QueueSubscriber\Client;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -35,15 +36,12 @@ class SubscriptionSpec extends ObjectBehavior
         $this->shouldHaveType(Subscription::class);
     }
 
-    function it_can_consume_stomp_destination(
-        Client $client,
-        StatefulStomp $statefulStomp
-    )
+    function it_can_consume_stomp_destination(StatefulStomp $statefulStomp)
     {
-        $this->consume(self::TOPIC, function (Frame $frame) {
-            Assert::eq($frame->getBody(), self::BODY);
+        $this->consume(self::TOPIC, function (Message $message) {
+            Assert::eq($message->getBody(), self::BODY);
 
-            Assert::eq($frame->getHeaders(), self::HEADERS);
+            Assert::eq($message->getHeaders(), self::HEADERS);
 
             $this->loopRunning = false;
         });

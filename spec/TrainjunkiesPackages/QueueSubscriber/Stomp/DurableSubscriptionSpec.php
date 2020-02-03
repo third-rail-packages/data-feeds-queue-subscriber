@@ -12,6 +12,7 @@ use TrainjunkiesPackages\QueueSubscriber\Client;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\DurableSubscription;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\SubscriberInterface;
 
@@ -72,7 +73,7 @@ class DurableSubscriptionSpec extends ObjectBehavior
         ServerAliveObserver $heartbeatObserver,
         Frame $stompFrame
     ) {
-        $function = function(Frame $frame) {
+        $function = function(Message $message) {
             $this->loopRunning = false;
         };
 
@@ -108,7 +109,5 @@ class DurableSubscriptionSpec extends ObjectBehavior
         $this->shouldThrow(\Exception::class)->duringConsume(self::TOPIC, function () {
             $this->loopRunning = false;
         });
-
-
     }
 }

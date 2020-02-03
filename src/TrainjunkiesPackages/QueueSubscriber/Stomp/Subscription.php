@@ -10,7 +10,7 @@ class Subscription extends SubscriberAbstract implements SubscriberInterface
 
         $this->loop(function () use ($callback) {
             if ($frame = $this->read()) {
-                $callback($frame);
+                $callback(new Message($frame));
             }
         });
     }

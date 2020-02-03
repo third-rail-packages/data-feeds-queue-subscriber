@@ -2,6 +2,7 @@
 
 use TrainjunkiesPackages\QueueSubscriber\Client;
 use TrainjunkiesPackages\QueueSubscriber\NationalRail\Topics\Darwin as DarwinTopic;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
 
@@ -17,9 +18,9 @@ try {
 
     $subscription = new Subscription(new Client($options));
 
-    $subscription->consume(DarwinTopic::DARWIN, function ($frame) {
+    $subscription->consume(DarwinTopic::DARWIN, function (Message $message) {
         echo PHP_EOL;
-        echo gzdecode($frame->body) . PHP_EOL;
+        echo gzdecode($message->getBody()) . PHP_EOL;
         echo PHP_EOL;
     });
 } catch (\Exception $e) {

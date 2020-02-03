@@ -4,6 +4,7 @@ use Stomp\Network\Observer\ServerAliveObserver;
 use TrainjunkiesPackages\QueueSubscriber\Client;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Vstp as VstpTopic;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\DurableSubscription;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
 
 include __DIR__ . '/../include.php';
@@ -25,8 +26,8 @@ try {
         new ServerAliveObserver()
     );
 
-    $subscription->consume(VstpTopic::VSTP_ALL, function($frame) {
-        echo $frame->body . PHP_EOL;
+    $subscription->consume(VstpTopic::VSTP_ALL, function(Message $message) {
+        echo $message->getBody() . PHP_EOL;
     });
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;

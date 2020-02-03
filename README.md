@@ -37,7 +37,7 @@ Below example will consume the Network Rail TRUST (Train Movements) topic until 
 ```php
 <?php // ./trust-durable-example.php
 
-use Stomp\Transport\Frame;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Client;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
@@ -55,9 +55,9 @@ try {
 
     $subscription = new Subscription(new Client($options));
 
-    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Frame $frame) {
+    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Message $message) {
         echo PHP_EOL;
-        var_dump(json_decode($frame->getBody(), true));
+        var_dump(json_decode($message->getBody(), true));
         echo PHP_EOL;
     });
 } catch (\Exception $e) {
@@ -75,7 +75,7 @@ Below example with request a durable connection with supplied Client ID and Acti
 <?php // ./trust-durable-example.php
 
 use Stomp\Network\Observer\ServerAliveObserver;
-use Stomp\Transport\Frame;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 use TrainjunkiesPackages\QueueSubscriber\Client;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\DurableSubscription;
@@ -100,9 +100,9 @@ try {
         new ServerAliveObserver()
     );
 
-    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Frame $frame) {
+    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Message $message) {
         echo PHP_EOL;
-        var_dump(json_decode($frame->getBody(), true));
+        var_dump(json_decode($message->getBody(), true));
         echo PHP_EOL;
     });
 } catch (\Exception $e) {

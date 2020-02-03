@@ -35,7 +35,7 @@ class DurableSubscription extends SubscriberAbstract implements SubscriberInterf
             $this->heartbeatObserver->isDelayed();
 
             if ($frame = $this->read()) {
-                $callback($frame);
+                $callback(new Message($frame));
                 $this->ack($frame);
             }
         });

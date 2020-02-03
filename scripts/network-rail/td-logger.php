@@ -2,6 +2,7 @@
 
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\SubscriptionFactory;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\TrainDescriber as TrainDescriberTopic;
+use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 
 include __DIR__ . '/../include.php';
 
@@ -11,8 +12,8 @@ try {
     SubscriptionFactory::create(
         networkrail_username(),
         networkrail_password()
-    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function($frame) use($tdArea) {
-        $collection = json_decode($frame->body, true);
+    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function(Message $message) use($tdArea) {
+        $collection = json_decode($message->getBody(), true);
 
         $filtered = array_filter($collection, function($item) use ($tdArea) {
             $data = array_shift($item);
