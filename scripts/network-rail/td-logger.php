@@ -1,6 +1,5 @@
 <?php
 
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\SubscriptionFactory;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\TrainDescriber as TrainDescriberTopic;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 
@@ -9,10 +8,7 @@ include __DIR__ . '/../include.php';
 $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
 
 try {
-    SubscriptionFactory::create(
-        networkrail_username(),
-        networkrail_password()
-    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function(Message $message) use($tdArea) {
+    networkrail_simple_client()->consume(TrainDescriberTopic::TD_ALL_AREAS, function(Message $message) use($tdArea) {
         $collection = json_decode($message->getBody(), true);
 
         $filtered = array_filter($collection, function($item) use ($tdArea) {

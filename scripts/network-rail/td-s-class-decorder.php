@@ -1,6 +1,5 @@
 <?php
 
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\SubscriptionFactory;
 use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\TrainDescriber as TrainDescriberTopic;
 use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
 
@@ -10,10 +9,7 @@ $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
 $messageType = ($argv[2] !== null) ? $argv[2] : 'SF'; // Default to Signalling Update
 
 try {
-    SubscriptionFactory::create(
-        networkrail_username(),
-        networkrail_password()
-    )->consume(TrainDescriberTopic::TD_ALL_AREAS, function (Message $message) use ($tdArea, $messageType) {
+    networkrail_simple_client()->consume(TrainDescriberTopic::TD_ALL_AREAS, function (Message $message) use ($tdArea, $messageType) {
         $collection = json_decode($message->getBody(), true);
 
         $filtered = array_filter($collection, function ($item) use ($tdArea, $messageType) {

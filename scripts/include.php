@@ -66,6 +66,23 @@ function networkrail_password()
     return getenv('NETWORKRAIL_PASSWORD');
 }
 
+/**
+ * @return \TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription
+ */
+function networkrail_simple_client()
+{
+    $options = (new TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder())
+        ->withUsername(networkrail_username())
+        ->withPassword(networkrail_password())
+        ->withHost(networkrail_host())
+        ->withPort(networkrail_port())
+        ->build();
+
+    return new \TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription(
+        new \TrainjunkiesPackages\QueueSubscriber\Client($options)
+    );
+}
+
 function networkrail_durable_subscription_name($feed)
 {
     $feed = str_replace('/topic/', '', $feed);
