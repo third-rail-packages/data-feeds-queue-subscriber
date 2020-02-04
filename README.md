@@ -134,7 +134,7 @@ php scripts/network-rail/trust.php
 
 [Xdebug](https://xdebug.org/) has also been installed to debug PHP.
 
-An ActiveMQ container is also present to aid development / debugging. The management interface can be accessed through a browser on `http://localhost:8181/admin` with the credentials `admin` & `admin`.  
+An ActiveMQ container is also present to aid development / debugging. The management interface can be accessed through a browser on `http://localhost:8181/admin` with the credentials `admin` & `admin`.
 
 
 ## Authors
