@@ -1,11 +1,11 @@
 <?php
 
 use Stomp\Network\Observer\ServerAliveObserver;
-use TrainjunkiesPackages\QueueSubscriber\Client;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Vstp as VstpTopic;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\DurableSubscription;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use ThirdRailPackages\QueueSubscriber\Client;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Vstp as VstpTopic;
+use ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
 
 include __DIR__ . '/../include.php';
 
@@ -15,7 +15,7 @@ try {
         ->withPassword(networkrail_password())
         ->withHost(networkrail_host())
         ->withPort(networkrail_port())
-        ->withClientId('trainjunkies-packages_queue-subscriber_vstp-durable-dev-' . uniqid(true))
+        ->withClientId('third-rail-packages_queue-subscriber_vstp-durable-dev-' . uniqid(true))
         ->withSubscriptionName(networkrail_durable_subscription_name(VstpTopic::VSTP_ALL))
         ->build();
 

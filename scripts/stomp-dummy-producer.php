@@ -1,6 +1,6 @@
 <?php
 
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
 
 require __DIR__ . '/include.php';
 

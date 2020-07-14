@@ -67,19 +67,19 @@ function networkrail_password()
 }
 
 /**
- * @return \TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription
+ * @return \ThirdRailPackages\QueueSubscriber\Stomp\Subscription
  */
 function networkrail_simple_client()
 {
-    $options = (new TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder())
+    $options = (new ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder())
         ->withUsername(networkrail_username())
         ->withPassword(networkrail_password())
         ->withHost(networkrail_host())
         ->withPort(networkrail_port())
         ->build();
 
-    return new \TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription(
-        new \TrainjunkiesPackages\QueueSubscriber\Client($options)
+    return new \ThirdRailPackages\QueueSubscriber\Stomp\Subscription(
+        new \ThirdRailPackages\QueueSubscriber\Client($options)
     );
 }
 
@@ -88,7 +88,7 @@ function networkrail_durable_subscription_name($feed)
     $feed = str_replace('/topic/', '', $feed);
 
     return sprintf(
-        'trainjunkies-packages-queue-subscriber_%s_development',
+        'third-rail-packages-queue-subscriber_%s_development',
         strtolower($feed)
     );
 }

@@ -3,8 +3,8 @@
 namespace Tests\NetworkRail;
 
 use PHPUnit\Framework\TestCase;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
 
 class TrustTest extends TestCase
 {

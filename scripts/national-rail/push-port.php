@@ -1,10 +1,10 @@
 <?php
 
-use TrainjunkiesPackages\QueueSubscriber\Client;
-use TrainjunkiesPackages\QueueSubscriber\NationalRail\Topics\Darwin as DarwinTopic;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
+use ThirdRailPackages\QueueSubscriber\Client;
+use ThirdRailPackages\QueueSubscriber\NationalRail\Topics\Darwin as DarwinTopic;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use ThirdRailPackages\QueueSubscriber\Stomp\Subscription;
 
 include __DIR__ . '/../include.php';
 
