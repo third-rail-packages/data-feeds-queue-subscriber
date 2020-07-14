@@ -1,4 +1,6 @@
-# Trainjunkies - Data Feeds Queue Subscriber
+# The Third Rail - Data Feeds Queue Subscriber
+
+![CI](https://github.com/third-rail-packages/data-feeds-queue-subscriber/workflows/CI/badge.svg)
 
 PHP package to consume Open Rail Data feeds from National Rail & Network Rail via Active MQ STOMP. Supports durable connections with server heartbeats.
 
@@ -10,7 +12,7 @@ PHP package to consume Open Rail Data feeds from National Rail & Network Rail vi
 Install [Composer](https://getcomposer.org/doc/00-intro.md)  and require the package with the below command.
 
 ```bash
-composer require trainjunkies-packages/data-feeds-queue-subscriber
+composer require third-rail-packages/data-feeds-queue-subscriber
 ```
 
 
@@ -37,11 +39,11 @@ Below example will consume the Network Rail TRUST (Train Movements) topic until 
 ```php
 <?php // ./trust-durable-example.php
 
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
-use TrainjunkiesPackages\QueueSubscriber\Client;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Subscription;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\Client;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
+use ThirdRailPackages\QueueSubscriber\Stomp\Subscription;
+use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -75,11 +77,11 @@ Below example with request a durable connection with supplied Client ID and Acti
 <?php // ./trust-durable-example.php
 
 use Stomp\Network\Observer\ServerAliveObserver;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
-use TrainjunkiesPackages\QueueSubscriber\Client;
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\DurableSubscription;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\Client;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
+use ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription;
+use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -141,7 +143,7 @@ An ActiveMQ container is also present to aid development / debugging. The manage
 
 - **Ben McManus** - [bennoislost](https://github.com/bennoislost)
 
-See also the list of [contributors](https://github.com/trainjunkies-packages/data-feeds-queue-subscriber/contributors) who participated in this project
+See also the list of [contributors](https://github.com/third-rail-packages/data-feeds-queue-subscriber/contributors) who participated in this project
 
 
 ## License

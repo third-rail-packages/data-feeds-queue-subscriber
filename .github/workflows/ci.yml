@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: "CI"
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+        dependencies: [locked]
+        os: [ubuntu-latest]
+        experimental: [false]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Cache dependencies"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader
+
+      - name: Run test suite
+        env:
+          NETWORKRAIL_HOST: ${{ secrets.NETWORKRAIL_HOST }}
+          NETWORKRAIL_PORT: ${{ secrets.NETWORKRAIL_PORT }}
+          NETWORKRAIL_USERNAME: ${{ secrets.NETWORKRAIL_USERNAME }}
+          NETWORKRAIL_PASSWORD: ${{ secrets.NETWORKRAIL_PASSWORD }}
+        run: composer ci

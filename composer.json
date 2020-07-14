@@ -1,10 +1,11 @@
 {
-    "name": "trainjunkies-packages/data-feeds-queue-subscriber",
+    "name": "third-rail-packages/data-feeds-queue-subscriber",
     "description": "Subscribe to Network Rail & National Rail data feed queues",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "stomp-php/stomp-php": "^4.5"
     },
     "require-dev": {
@@ -14,8 +15,8 @@
         "squizlabs/php_codesniffer": "^3.4"
     },
     "autoload": {
-        "psr-0": {
-            "TrainjunkiesPackages\\": "src/"
+        "psr-4": {
+            "ThirdRailPackages\\QueueSubscriber\\": "src/ThirdRailPackages/QueueSubscriber"
         }
     },
     "config": {

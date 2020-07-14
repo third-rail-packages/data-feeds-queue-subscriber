@@ -1,11 +1,11 @@
 version: '2'
 
 services:
-  app:
+  console:
     build:
-      context: ./docker/app
+      context: ./docker/console
     environment:
-      - PHP_IDE_CONFIG=serverName=trainjunkies_packages_queue_subscriber
+      - PHP_IDE_CONFIG=serverName=third_rail_packages_queue_subscriber
     working_dir: /app
     env_file: .env
     volumes:

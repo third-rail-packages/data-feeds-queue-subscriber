@@ -1,7 +1,7 @@
 <?php
 
-use TrainjunkiesPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
-use TrainjunkiesPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
 
 include __DIR__ . '/../include.php';
 
