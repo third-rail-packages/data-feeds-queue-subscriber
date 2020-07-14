@@ -1,5 +1,7 @@
 # The Third Rail - Data Feeds Queue Subscriber
 
+![CI](https://github.com/third-rail-packages/data-feeds-queue-subscriber/workflows/CI/badge.svg)
+
 PHP package to consume Open Rail Data feeds from National Rail & Network Rail via Active MQ STOMP. Supports durable connections with server heartbeats.
 
 
