@@ -44,4 +44,9 @@ jobs:
         run: composer install --prefer-dist --no-interaction --optimize-autoloader
 
       - name: Run test suite
+        env:
+          NETWORKRAIL_HOST: ${{ secrets.NETWORKRAIL_HOST }}
+          NETWORKRAIL_PORT: ${{ secrets.NETWORKRAIL_PORT }}
+          NETWORKRAIL_USERNAME: ${{ secrets.NETWORKRAIL_USERNAME }}
+          NETWORKRAIL_PASSWORD: ${{ secrets.NETWORKRAIL_PASSWORD }}
         run: composer ci
