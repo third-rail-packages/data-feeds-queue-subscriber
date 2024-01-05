@@ -31,87 +31,48 @@ Signup to the [Network Rail Open Data platform](https://datafeeds.networkrail.co
 
 Example code can be found in `./scripts/network-rail`
 
+### Durable Subscription with heartbeats
 
-### Subscription
-
-Below example will consume the Network Rail TRUST (Train Movements) topic until interrupted by the client.
-
-```php
-<?php // ./trust-durable-example.php
-
-use ThirdRailPackages\QueueSubscriber\Stomp\Message;
-use ThirdRailPackages\QueueSubscriber\Client;
-use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
-use ThirdRailPackages\QueueSubscriber\Stomp\Subscription;
-use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
-
-include __DIR__ . '/vendor/autoload.php';
-
-try {
-    $options = (new OptionsBuilder())
-        ->withUsername('my-nrod-email@example.com')
-        ->withPassword('secret-password')
-        ->withHost('datafeeds.networkrail.co.uk')
-        ->withPort('61618')
-        ->build();
-
-    $subscription = new Subscription(new Client($options));
-
-    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Message $message) {
-        echo PHP_EOL;
-        var_dump(json_decode($message->getBody(), true));
-        echo PHP_EOL;
-    });
-} catch (\Exception $e) {
-    echo $e->getMessage() . PHP_EOL;
-    exit(1);
-}
-```
+Below example with request a durable connection with supplied Client ID and ActiveMQ subscription name expecting a heartbeat frame from the server every 20 seconds while emitting one every 5.
 
 
-### Durable Subscription with server heartbeats
-
-Below example with request a durable connection with supplied Client ID and ActiveMQ subscription name expecting a heartbeat frame from the server every 15 seconds.
 
 ```php
 <?php // ./trust-durable-example.php
 
-use Stomp\Network\Observer\ServerAliveObserver;
-use ThirdRailPackages\QueueSubscriber\Stomp\Message;
-use ThirdRailPackages\QueueSubscriber\Client;
-use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust as TrustTopic;
+use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics;
 use ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription;
-use ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder;
+use ThirdRailPackages\QueueSubscriber\Stomp\Message;
+use ThirdRailPackages\QueueSubscriber\Stomp\StompClientFactory;
 
 include __DIR__ . '/vendor/autoload.php';
 
 try {
-    $options = (new OptionsBuilder())
-        ->withUsername('my-nrod-email@example.com')
-        ->withPassword('secret-password')
-        ->withHost('datafeeds.networkrail.co.uk')
-        ->withPort('61618')
-        // Consult Open Rail Data wiki on Best practice for durable subscriptions
-        ->withClientId('my-nrod-email@example.com')
-        ->withSubscriptionName('my-nrod-production')
-        ->withHeartbeatReadTimeout(15000) // 15 Sec
-        ->build();
-
-    $subscription = new DurableSubscription(
-        new Client($options),
-        new ServerAliveObserver()
+    // Additional arguments can be useed to configure Stomp connection
+    $client = StompClientFactory::make(
+        'publicdatafeeds.networkrail.co.uk',
+        61618,
+        'mynrod-email@example.com',
+        'S3eC7et'
     );
 
-    $subscription->consume(TrustTopic::MOVEMENT_ALL, function(Message $message) {
+    // Consult Open Rail Data wiki on Best practice for durable subscriptions
+    return new DurableSubscription(
+        $client,
+        'my-nrod-production'
+    );
+
+    $subscription->consume(Topics\Trust::MOVEMENT_ALL, function(Message $message) {
         echo PHP_EOL;
         var_dump(json_decode($message->getBody(), true));
         echo PHP_EOL;
     });
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
-    // Place sleep(X) here or implement expotential backoff
+    // Place sleep(X) here or implement exponential backoff
     exit(1);
 }
+
 ```
 
 

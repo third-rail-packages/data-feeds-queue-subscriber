@@ -1,4 +1,5 @@
 .env
-bin/php*
+bin/*
 vendor
 composer.lock
+.php-cs-fixer.cache

@@ -4,34 +4,46 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^7.4.24",
         "ext-json": "*",
-        "stomp-php/stomp-php": "^4.5"
+        "stomp-php/stomp-php": "^5.1.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "^6.1",
-        "phpstan/phpstan": "^0.12.6",
-        "phpunit/phpunit": "^8.5",
-        "squizlabs/php_codesniffer": "^3.4"
+        "friendsofphp/php-cs-fixer": "^3.31",
+        "phpspec/phpspec": "*",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.0",
+        "squizlabs/php_codesniffer": "^3.4",
+        "vlucas/phpdotenv": "^5.6"
     },
     "autoload": {
         "psr-4": {
             "ThirdRailPackages\\QueueSubscriber\\": "src/ThirdRailPackages/QueueSubscriber"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Support\\": "src/Support"
+        }
+    },
     "config": {
         "sort-packages": true,
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "scripts": {
-        "sniff": "bin/phpcs --colors --cache --standard=PSR2 -p -s -v src/ --colors",
-        "beauty": "bin/phpcbf --standard=PSR2 src/ --colors",
-        "static": "bin/phpstan analyse src/ --level=max --ansi --verbose",
+        "format": "bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "style": "@format --dry-run -v",
+        "phpstan": "bin/phpstan analyse src/ --level=max --ansi --verbose",
         "spec": "bin/phpspec run --format=pretty --no-code-generation --stop-on-failure --ansi",
         "integration": "bin/phpunit --stop-on-defect --stop-on-incomplete --stop-on-error --colors=always --verbose",
-        "ci": [
-            "@sniff",
-            "@static",
+        "test": [
+            "@format",
+            "@phpstan",
             "@spec",
             "@integration"
         ]
