@@ -13,7 +13,7 @@ class TrustTest extends TestCase
      */
     public function it_can_receive_message_from_movements_feed()
     {
-        $client = networkrail_simple_client(Topics\Trust::MOVEMENT_ALL);
+        $client = networkrail_simple_client('ci_test', Topics\Trust::MOVEMENT_ALL);
         $client->consume(Topics\Trust::MOVEMENT_ALL, function (Message $message) use ($client) {
             $this->assertIsString($message->getBody());
             $this->assertIsArray($message->getHeaders());

@@ -56,7 +56,7 @@ function networkrail_password()
 }
 
 
-function networkrail_simple_client(string $subscriptionKey): \ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription
+function networkrail_simple_client(string $clientId, string $subscriptionKey): \ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription
 {
     if (strlen($subscriptionKey) === 0) {
         throw new \Exception('Please provide a custom subscription key');
@@ -67,6 +67,7 @@ function networkrail_simple_client(string $subscriptionKey): \ThirdRailPackages\
         networkrail_port(),
         networkrail_username(),
         networkrail_password(),
+        network_rail_client_id($clientId),
         0,
         0,
     );
@@ -84,6 +85,16 @@ function networkrail_durable_subscription_name($feed)
     return sprintf(
         'third-rail-packages-queue-subscriber_%s_development',
         strtolower($feed)
+    );
+}
+
+function network_rail_client_id(string $identifier): string
+{
+    return sprintf(
+        "%s-%s-%s",
+        'third_rail_packages_queue_subscriber_dev',
+        networkrail_username(),
+        $identifier
     );
 }
 
