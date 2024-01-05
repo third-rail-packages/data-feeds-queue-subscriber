@@ -14,6 +14,7 @@ class StompClientFactory
         int $port,
         string $login,
         string $password,
+        string $clientId,
         int $sendHeartbeat = 5000,
         int $receiveHeartbeat = 20000,
         int $readTimeout = 1,
@@ -25,6 +26,7 @@ class StompClientFactory
             'port'               => $port,
             'login'              => $login,
             'password'           => $password,
+            'client_id'          => $clientId,
             'send_heartbeat'     => $sendHeartbeat,
             'receive_heartbeat'  => $receiveHeartbeat,
             'read_timeout'       => $readTimeout,
@@ -39,6 +41,7 @@ class StompClientFactory
      *     port: int,
      *     login: string,
      *     password: string,
+     *     client_id: string,
      *     send_heartbeat: int,
      *     receive_heartbeat: int,
      *     read_timeout: int,
@@ -68,7 +71,7 @@ class StompClientFactory
 
         $client = new Client($connection);
         $client->setLogin($config['login'], $config['password']);
-        $client->setClientId($config['login']);
+        $client->setClientId($config['client_id']);
         $client->setHeartbeat($config['send_heartbeat'], $config['receive_heartbeat']);
 
         return $client;
@@ -80,6 +83,7 @@ class StompClientFactory
      *     port: int,
      *     login: string,
      *     password: string,
+     *     client_id: string,
      *     send_heartbeat: int,
      *     receive_heartbeat: int,
      *     read_timeout: int,
@@ -94,6 +98,7 @@ class StompClientFactory
             'port'               => 61618,
             'login'              => 'guest',
             'password'           => 'guest',
+            'client_id'          => 'default',
             'send_heartbeat'     => 0,
             'receive_heartbeat'  => 0,
             'read_timeout'       => 1,

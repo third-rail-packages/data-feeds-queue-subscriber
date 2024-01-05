@@ -6,22 +6,19 @@ use ThirdRailPackages\QueueSubscriber\Stomp\Message;
 include __DIR__ . '/../include.php';
 
 try {
-    networkrail_simple_client()
+    networkrail_simple_client('trust_local', 'trust_local')
         ->consume(
             TrustTopic::MOVEMENT_ALL,
             function(Message $message) {
-                try {
-                    $trust = \ThirdRailPackages\NetworkRailDataFeedMessages\Message\Trust::fromJson($message->getBody());
-                    echo 'MESSAGE RECIEVED' . PHP_EOL;
+                $timestamp = format_datetime_from_milliseconds(
+                    $message->getHeaders()['timestamp']
+                );
 
-                } catch (\Throwable $e) {
-                    echo $e->getMessage() . PHP_EOL;
-                    echo PHP_EOL . PHP_EOL;
-                    echo $e->getTraceAsString();
-                    echo PHP_EOL . PHP_EOL;
-                    echo $message->getBody();
-                    echo PHP_EOL;
-                }
+                echo sprintf(
+                    "TRUST: %s - %s",
+                    $timestamp,
+                    $message->getBody()
+                ) . PHP_EOL;
             }
         );
 
