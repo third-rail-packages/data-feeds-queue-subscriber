@@ -10,7 +10,7 @@ interface MessageInterface
     public function getHeaders(): array;
 
     /**
-     * @return string|false
+     * @return false|string
      */
     public function getBody();
 }

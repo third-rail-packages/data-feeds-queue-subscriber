@@ -9,7 +9,10 @@ $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
 $messageType = ($argv[2] !== null) ? $argv[2] : 'SF'; // Default to Signalling Update
 
 try {
-    networkrail_simple_client()->consume(TrainDescriberTopic::TD_ALL_AREAS, function (Message $message) use ($tdArea, $messageType) {
+    $yourUniqueSubscriptionName = '';
+
+
+    networkrail_simple_client($yourUniqueSubscriptionName)->consume(TrainDescriberTopic::TD_ALL_AREAS, function (Message $message) use ($tdArea, $messageType) {
         $collection = json_decode($message->getBody(), true);
 
         $filtered = array_filter($collection, function ($item) use ($tdArea, $messageType) {

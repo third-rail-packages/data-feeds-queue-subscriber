@@ -1,25 +1,13 @@
 <?php
 
+use Stomp\Network\Connection;
+
 include __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set('UTC');
 
-function docker_producer_client()
-{
-    return new Stomp\Client(
-        sprintf("tcp://%s:%s", docker_activemq_host(), docker_activemq_port())
-    );
-}
-
-function docker_activemq_host()
-{
-    return 'activemq';
-}
-
-function docker_activemq_port()
-{
-    return '61613';
-}
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 function nationalrail_host()
 {
@@ -48,6 +36,7 @@ function nationalrail_topic()
 
 function networkrail_host()
 {
+
     return getenv('NETWORKRAIL_HOST');
 }
 
@@ -66,20 +55,25 @@ function networkrail_password()
     return getenv('NETWORKRAIL_PASSWORD');
 }
 
-/**
- * @return \ThirdRailPackages\QueueSubscriber\Stomp\Subscription
- */
-function networkrail_simple_client()
-{
-    $options = (new ThirdRailPackages\QueueSubscriber\Stomp\OptionsBuilder())
-        ->withUsername(networkrail_username())
-        ->withPassword(networkrail_password())
-        ->withHost(networkrail_host())
-        ->withPort(networkrail_port())
-        ->build();
 
-    return new \ThirdRailPackages\QueueSubscriber\Stomp\Subscription(
-        new \ThirdRailPackages\QueueSubscriber\Client($options)
+function networkrail_simple_client(string $subscriptionKey): \ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription
+{
+    if (strlen($subscriptionKey) === 0) {
+        throw new \Exception('Please provide a custom subscription key');
+    }
+
+    $client = \ThirdRailPackages\QueueSubscriber\Stomp\StompClientFactory::make(
+        networkrail_host(),
+        networkrail_port(),
+        networkrail_username(),
+        networkrail_password(),
+        0,
+        0,
+    );
+
+    return new \ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription(
+        $client,
+        networkrail_durable_subscription_name($subscriptionKey)
     );
 }
 
@@ -103,11 +97,11 @@ function hexagonal_to_binary($hexadecimal)
  *
  * @return DateTimeImmutable
  */
-function datetime_from_milliseconds($milliseconds)
+function datetime_from_milliseconds(int $milliseconds)
 {
     $utcDate = DateTimeImmutable::createFromFormat(
         'U',
-        ($milliseconds / 1000),
+        $milliseconds,
         new DateTimeZone('UTC')
     );
 
@@ -116,6 +110,22 @@ function datetime_from_milliseconds($milliseconds)
 
 function format_datetime_from_milliseconds($milliseconds)
 {
-    return datetime_from_milliseconds(floor($milliseconds / 1000))
-        ->format('d/m/Y H:i:s');
+    return datetime_from_milliseconds(
+        floor($milliseconds / 1000)
+    )->format('Y-m-d H:i:s');
+}
+
+function random_string(
+    int $length = 64,
+    string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+): string {
+    if ($length < 1) {
+        throw new \RangeException("Length must be a positive integer");
+    }
+    $pieces = [];
+    $max = mb_strlen($keyspace, '8bit') - 1;
+    for ($i = 0; $i < $length; ++$i) {
+        $pieces []= $keyspace[random_int(0, $max)];
+    }
+    return implode('', $pieces);
 }

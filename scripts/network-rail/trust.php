@@ -10,7 +10,18 @@ try {
         ->consume(
             TrustTopic::MOVEMENT_ALL,
             function(Message $message) {
-                echo $message->getBody() . PHP_EOL;
+                try {
+                    $trust = \ThirdRailPackages\NetworkRailDataFeedMessages\Message\Trust::fromJson($message->getBody());
+                    echo 'MESSAGE RECIEVED' . PHP_EOL;
+
+                } catch (\Throwable $e) {
+                    echo $e->getMessage() . PHP_EOL;
+                    echo PHP_EOL . PHP_EOL;
+                    echo $e->getTraceAsString();
+                    echo PHP_EOL . PHP_EOL;
+                    echo $message->getBody();
+                    echo PHP_EOL;
+                }
             }
         );
 

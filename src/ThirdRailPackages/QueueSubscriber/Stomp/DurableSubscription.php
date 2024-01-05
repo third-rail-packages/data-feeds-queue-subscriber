@@ -2,90 +2,53 @@
 
 namespace ThirdRailPackages\QueueSubscriber\Stomp;
 
-use Stomp\Network\Observer\ConnectionObserver;
-use Stomp\Network\Observer\ServerAliveObserver;
-use ThirdRailPackages\QueueSubscriber\Client;
-use ThirdRailPackages\QueueSubscriber\Stomp\Exception\HeartbeatException;
+use Exception;
+use Stomp\Broker\ActiveMq\Mode\DurableSubscription as StompDurableSubscription;
+use Stomp\Client;
+use Throwable;
 
-class DurableSubscription extends SubscriberAbstract implements SubscriberInterface
+class DurableSubscription
 {
-    /**
-     * @var ServerAliveObserver
-     */
-    private $heartbeatObserver;
+    public bool $looping = false;
+    private Client $client;
+    private string $subscriptionId;
 
-    public function __construct(
-        Client $client,
-        ServerAliveObserver $heartbeatObserver
-    ) {
-        parent::__construct($client);
-
-        $this->heartbeatObserver = $heartbeatObserver;
+    public function __construct(Client $client, string $subscriptionId)
+    {
+        $this->client         = $client;
+        $this->subscriptionId = $subscriptionId;
     }
 
-    public function consume(string $queue, callable $callback): void
+    public function consume(string $topic, callable $callback): void
     {
-        $this->setupHeartbeat($this->heartbeatObserver);
-
-        $this->subscribe($queue);
-
-        $this->heartbeatsEnabled();
-
-        $this->loop(function () use ($callback) {
-            $this->heartbeatObserver->isDelayed();
-
-            if ($frame = $this->read()) {
-                $callback(new Message($frame));
-                $this->ack($frame);
-            }
-        });
-    }
-
-    protected function subscribe($destination): void
-    {
-        $this->client->subscription()->subscribe(
-            $destination,
+        $durableConsumer = new StompDurableSubscription(
+            $this->client,
+            $topic,
             null,
-            'client-individual',
-            $this->subscriptionNameHeader()
+            'client',
+            $this->subscriptionId
         );
-    }
+        $durableConsumer->activate();
 
-    private function setupHeartbeat(
-        ConnectionObserver $observer
-    ): void {
-        $this->client
-            ->stompClient()
-            ->getConnection()
-            ->setReadTimeout($this->client->options()->readTimeout());
+        $this->looping = true;
 
-        $this->client->stompClient()->setHeartbeat(
-            0, // We are not sending beats to the broker
-            $this->client->options()->heartbeatReadTimeout()
-        );
+        while ($this->looping) { // @phpstan-ignore-line
+            try {
+                if ($frame = $durableConsumer->read()) {
+                    $callback(new Message($frame));
+                    $durableConsumer->ack($frame);
+                }
 
-        $this->client
-            ->stompClient()
-            ->getConnection()
-            ->getObservers()
-            ->addObserver($observer);
-    }
+                if (!$durableConsumer->isActive()) {
+                    $this->looping = false;
 
-    /**
-     * @return array<string>
-     */
-    private function subscriptionNameHeader(): array
-    {
-        return [
-            'activemq.subscriptionName' => $this->client
-                ->options()->subscriptionName()
-        ];
-    }
+                    throw new Exception('Consumer no longer active');
+                }
+            } catch (Throwable $t) {
+                $this->looping = false;
 
-    private function heartbeatsEnabled(): void
-    {
-        if (!$this->heartbeatObserver->isEnabled()) {
-            throw HeartbeatException::heartbeatNotEnabled();
+                throw $t;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 /docker export-ignore
 /integration export-ignore
+/src/Support export-ignore
 /spec export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore

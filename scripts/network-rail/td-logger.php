@@ -8,7 +8,9 @@ include __DIR__ . '/../include.php';
 $tdArea = ($argv[1] !== null) ? $argv[1] : 'MS'; // Default to Manchester South
 
 try {
-    networkrail_simple_client()->consume(TrainDescriberTopic::TD_ALL_AREAS, function(Message $message) use($tdArea) {
+    $yourUniqueSubscriptionName = '';
+
+    networkrail_simple_client($yourUniqueSubscriptionName)->consume(TrainDescriberTopic::TD_ALL_AREAS, function(Message $message) use($tdArea) {
         $collection = json_decode($message->getBody(), true);
 
         $filtered = array_filter($collection, function($item) use ($tdArea) {

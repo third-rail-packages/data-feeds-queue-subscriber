@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "7.2"
+          - "7.4"
         dependencies: [locked]
         os: [ubuntu-latest]
         experimental: [false]
@@ -49,4 +49,4 @@ jobs:
           NETWORKRAIL_PORT: ${{ secrets.NETWORKRAIL_PORT }}
           NETWORKRAIL_USERNAME: ${{ secrets.NETWORKRAIL_USERNAME }}
           NETWORKRAIL_PASSWORD: ${{ secrets.NETWORKRAIL_PASSWORD }}
-        run: composer ci
+        run: composer test

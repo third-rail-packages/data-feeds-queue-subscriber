@@ -2,12 +2,14 @@
 
 namespace spec\ThirdRailPackages\QueueSubscriber\NetworkRail\Topics;
 
+use Support\CustomMatchersTrait;
 use ThirdRailPackages\QueueSubscriber\NetworkRail\Topics\Trust;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class TrustSpec extends ObjectBehavior
 {
+    use CustomMatchersTrait;
+
     function it_is_initializable()
     {
         $this->shouldHaveType(Trust::class);
@@ -17,5 +19,14 @@ class TrustSpec extends ObjectBehavior
     {
         $this::tocMovementTopicFromBusinessCode('HF')->shouldBe('TRAIN_MVT_HF_TOC');
         $this::tocMovementTopicFromBusinessCode('ej')->shouldBe('TRAIN_MVT_EJ_TOC');
+    }
+
+    function it_has_constants()
+    {
+        $this->shouldhaveConstants([
+            'MOVEMENT_ALL' => '/topic/TRAIN_MVT_ALL_TOC',
+            'MOVEMENT_FREIGHT' => '/topic/TRAIN_MVT_FREIGHT',
+            'MOVEMENT_GENERAL' => '/topic/TRAIN_MVT_GENERAL',
+        ]);
     }
 }

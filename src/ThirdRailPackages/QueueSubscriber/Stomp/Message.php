@@ -17,7 +17,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @return string|false
+     * @return false|string
      */
     public function getBody()
     {
