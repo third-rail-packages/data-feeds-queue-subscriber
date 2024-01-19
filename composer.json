@@ -4,16 +4,17 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^7.4.24",
+        "php": "^8.1",
         "ext-json": "*",
-        "stomp-php/stomp-php": "^5.1.0"
+        "stomp-php/stomp-php": "^5.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.31",
-        "phpspec/phpspec": "*",
+        "friendsofphp/php-cs-fixer": "^3.47",
+        "phpspec/phpspec": "^7.5",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^9.0",
-        "squizlabs/php_codesniffer": "^3.4",
+        "phpunit/phpunit": "^10.5",
+        "rector/rector": "^0.19",
+        "squizlabs/php_codesniffer": "^3.8",
         "vlucas/phpdotenv": "^5.6"
     },
     "autoload": {
@@ -40,7 +41,7 @@
         "style": "@format --dry-run -v",
         "phpstan": "bin/phpstan analyse src/ --level=max --ansi --verbose",
         "spec": "bin/phpspec run --format=pretty --no-code-generation --stop-on-failure --ansi",
-        "integration": "bin/phpunit --stop-on-defect --stop-on-incomplete --stop-on-error --colors=always --verbose",
+        "integration": "bin/phpunit --stop-on-defect --stop-on-incomplete --stop-on-error --colors=always",
         "test": [
             "@format",
             "@phpstan",

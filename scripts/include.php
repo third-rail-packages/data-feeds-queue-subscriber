@@ -7,7 +7,7 @@ include __DIR__ . '/../vendor/autoload.php';
 date_default_timezone_set('UTC');
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../');
-$dotenv->load();
+$dotenv->safeLoad();
 
 function nationalrail_host()
 {
@@ -32,6 +32,28 @@ function nationalrail_password()
 function nationalrail_topic()
 {
     return getenv('NATIONALRAIL_TOPIC');
+}
+
+function nationalrail_simple_client(string $clientId, string $subscriptionKey)
+{
+    if (strlen($subscriptionKey) === 0) {
+        throw new \Exception('Please provide a custom subscription key');
+    }
+
+    $client = \ThirdRailPackages\QueueSubscriber\Stomp\StompClientFactory::make(
+        nationalrail_host(),
+        nationalrail_port(),
+        nationalrail_username(),
+        nationalrail_password(),
+        nationalrail_client_id($clientId),
+        0,
+        0,
+    );
+
+    return new \ThirdRailPackages\QueueSubscriber\Stomp\DurableSubscription(
+        $client,
+        networkrail_durable_subscription_name($subscriptionKey)
+    );
 }
 
 function networkrail_host()
@@ -94,6 +116,16 @@ function network_rail_client_id(string $identifier): string
         "%s-%s-%s",
         'third_rail_packages_queue_subscriber_dev',
         networkrail_username(),
+        $identifier
+    );
+}
+
+function nationalrail_client_id(string $identifier): string
+{
+    return sprintf(
+        "%s-%s-%s",
+        nationalrail_username(),
+        'third_rail_packages_queue_subscriber_dev',
         $identifier
     );
 }
