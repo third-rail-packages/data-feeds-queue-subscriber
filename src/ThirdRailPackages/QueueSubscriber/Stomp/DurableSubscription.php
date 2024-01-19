@@ -10,13 +10,9 @@ use Throwable;
 class DurableSubscription
 {
     public bool $looping = false;
-    private Client $client;
-    private string $subscriptionId;
 
-    public function __construct(Client $client, string $subscriptionId)
+    public function __construct(private readonly Client $client, private readonly string $subscriptionId)
     {
-        $this->client         = $client;
-        $this->subscriptionId = $subscriptionId;
     }
 
     public function consume(string $topic, callable $callback): void
